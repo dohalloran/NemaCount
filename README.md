@@ -11,7 +11,7 @@ Damien O'Halloran, The George Washington University
   `cd NemaCount-master`  
   
 ## Getting Started  
-1. You must have [Google Chrome](https://www.google.com/chrome/) or [Apple Safari](http://www.apple.com/safari/)  browser   
+1. You must have [Firefox](https://www.mozilla.org/en-US/firefox/new/), [Google Chrome](https://www.google.com/chrome/) or [Apple Safari](http://www.apple.com/safari/)  browser   
 
 ## Usage 
 Run as follows:  
@@ -20,7 +20,7 @@ Run as follows:
   
 ## Notes 
 1. File paths are relative  
-2. May work on other browsers but only tested on Chrome and Safari  
+2. May work on other browsers but only tested on Firefox, Chrome and Safari  
 
 ## Contributing
 All contributions are welcome.
