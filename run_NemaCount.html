@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <script type="text/javascript">
+        var csstype = "external"
+        var mac_externalcss = 'css/image_analysis_mac.css'
+        var pc_externalcss = 'css/image_analysis.css'
+        var mactest = navigator.userAgent.indexOf("Mac") != -1
+        if (csstype == "inline") {
+            document.write('<style type="text/css">')
+            if (mactest)
+                document.write(mac_css)
+            else
+                document.write(pc_css)
+            document.write('</style>')
+        } else if (csstype == "external")
+            document.write('<link rel="stylesheet" type="text/css" href="' + (mactest ? mac_externalcss : pc_externalcss) + '">')
+    </script>
+
+    <title>NemaCount</title>
+    <script src="lib/jquery-1.11.3.min.js"></script>
+    <script src="lib/fabric.js"></script>
+    <script src="lib/image_analysis.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/introjs.css">
+</head>
+
+<body onload="letsBegin();">
+    <div align="center">
+        <img src="icons/heading_icon.jpg" alt="icons/head_icon" style="width:300px;height:150px;">
+        <h1><font color="orange" size = "1"></font></h1>
+        <img src="icons/title_icon.jpg" alt="icon" style="width:80px;height:80px;">
+        <input type="file" id="file_input" data-step="1" data-intro="Load a jpg file into NemaCount">
+        <h2>
+            <font color="black"><a id="clicksBlack"></a>&nbsp;</font>
+            <font color="blue"> <a id="clicksBlue"></a>&nbsp;</font>
+            <font color="red"> <a id="clicksRed"></a>&nbsp;</font>
+            <font color="green"> <a id="clicksGreen"></a>&nbsp;</font>
+            <font color="yellow"> <a id="clicksYellow"></a>&nbsp;</font>
+            <font color="gray"> <a id="clicksGray"></a>&nbsp;</font>
+            <font color="orange"> <a id="clicksOrange"></a>&nbsp;</font>
+            <font color="purple"> <a id="clicksPurple"></a>&nbsp;</font>
+        </h2>
+        <span style="color: red;">
+            <button onclick="letsCount()" id = "option1" data-step="2" data-intro="Choose 'Count' to count features in an image" disabled>Count</button>
+            <button id="option2" onclick="letsMeasure()" data-step="3" data-intro="Choose 'Measure Length' to get lengths of objects in the loaded image" disabled>Measure Line</button>
+            <button onclick="letsAngle()" id = "option3" data-step="4" data-intro="Choose 'Measure Angle' to get angles within the loaded image" disabled>Measure Angle</button>
+            <button onclick="letsDraw()" id = "option4" data-step="5" data-intro="Choose 'Free Draw' to measure freely drawn objects draw on the image" disabled>Free Draw</button>
+            <br><br>
+        </span>
+        <div class="filters">
+            <button onclick="letsGrey()" id="grayer" data-step="6" data-intro="Convert image to grayscale" disabled>Convert to grayscale</button>
+            <button onclick="letsInvert()" id="inverter" data-step="7" data-intro="Invert color scheme in image" disabled>Invert image color</button>
+            <button onclick="letsRemoveWhite()" id="remover" data-step="8" data-intro="Remove white color from image" disabled>Remove white from image</button>
+            <button onclick="letsSharpen()" id="sharper" data-step="9" data-intro="Sharpen the focus of loaded image" disabled>Sharpen image</button>
+            <br>
+            <button onclick="letsBright()" id="brighter" data-step="10" data-intro="Brightness for loaded image" disabled>Brightness</button>
+            <label><font size="4" color="black">level:</font>
+                <input type="range" id="brightness-value" value="50" min="0" max="150" disabled>
+            </label>
+        </div>
+        <div class="controls">
+            <button onclick="clearArea()" data-step="13" data-intro="Reset Measurements">Reset</button>
+            Line width :
+            <select id="selWidth" data-step="11" data-intro="Pick line size">
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="5" selected="selected">5</option>
+                <option value="7">7</option>
+                <option value="9">9</option>
+                <option value="11">11</option>
+            </select>
+            Color :
+            <select id="selColor" data-step="12" data-intro="Pick font/line color">
+                <option value="black">black</option>
+                <option value="blue" selected="selected">blue</option>
+                <option value="red">red</option>
+                <option value="green">green</option>
+                <option value="yellow">yellow</option>
+                <option value="gray">gray</option>
+                <option value="orange">orange</option>
+                <option value="purple">purple</option>
+            </select>
+        </div>
+        <div class="controls_2">
+            Original width (px):
+            <INPUT TYPE='TEXT' NAME='original width' id='real_width' data-step="14" data-intro="Enter the width of the original image in pixels" size="4" VALUE='800'></INPUT>
+            Original height (px):
+            <INPUT TYPE='TEXT' NAME='original height' id='real_height' data-step="15" data-intro="Enter the height of the original image in pixels" size="4" VALUE='800'></INPUT>
+            <br>Objective mag. :
+            <select id='obj_mag' data-step="16" data-intro="Enter the objective magnification used to capture image">
+                <option value="1" selected="selected">1x</option>
+                <option value="2">2x</option>
+                <option value="5">5x</option>
+                <option value="10">10x</option>
+                <option value="20">20x</option>
+                <option value="40">40x</option>
+                <option value="63">63x</option>
+                <option value="100">100</option>
+            </select>
+            CCD Pixel Size:
+            <INPUT TYPE='TEXT' id='pixel_size' NAME='CCD pixel size' data-step="17" data-intro="Enter pixel size on the camera used to capture the image" size="2" VALUE='1'></INPUT>
+            <br> Binning Factor:
+            <select id='bin_size' data-step="18" data-intro="Enter binning factor (if no bin factor was used = 1)">
+                <option value="1" selected="selected">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            Lens mag. :
+            <INPUT TYPE='TEXT' id='lens_mag' NAME='lens magnification' data-step="19" data-intro="Enter the lens magnification used (otherwise leave as 1)" size="2" VALUE='1'></INPUT>
+            C mount:
+            <INPUT TYPE='TEXT' id='c_mount' NAME='C mount' data-step="20" data-intro="If a camera mount was used, enter the magnification (otherwise leave at 1)" size="2" VALUE='1'></INPUT>
+        </div>
+        <div class="controls_3">
+            <button onclick="mean_count()" id="mean_count_option" data-step="21" data-intro="Get statistics for counts" disabled>Count Stats</button>
+            <button onclick="mean()" id="mean_option" data-step="22" data-intro="Get statistics for line measurements" disabled>Line Stats</button>
+            <button onclick="mean_Draw()" id="mean_Draw_option" data-step="23" data-intro="Get statistics for freely drawn measurements" disabled>Free Draw Stats</button>
+            <button onclick="chemoIndex()" id="chemoTaxis_option" data-step="24" data-intro="Calculate Chemotaxis Index as per Bargmann et al. 1993 (PMID: 8348618)" disabled>Chemotaxis Index (volatile)</button>
+            <button onclick="saltIndex()" id="saltTaxis_option" data-step="25" data-intro="Calculate Chemotaxis Index for soluble compounds as per Hart. 2006 (WormBook: Behavior)" disabled>Chemotaxis Index (soluble)</button>
+            <button onclick="avoidIndex()" id="avoidTaxis_option" data-step="26" data-intro="Calculate avoidance index as per Troemel et al. 1997 (PMID: 9346234)" disabled>Avoidance Index (volatile)</button>
+            <button onclick="aversionIndex()" id="aversionTaxis_option" data-step="27" data-intro="Calculate Aversion Index for soluble compounds as per Wicks et al. 2000 (PMID: 10790327)" disabled>Aversion Index (soluble)</button>
+            <button onclick="quadIndex()" id="quadTaxis_option" data-step="28" data-intro="Calculate Chemotaxis Index for quadrant assay plates as per Beets et al. 2012 (PMID: 23112336)" disabled>Quadrant Chemotaxis Index</button>
+            <button onclick="thermoIndex()" id="thermoTaxis_option" data-step="29" data-intro="Calculate Linear Thermotaxis Index as per Goodman et al. 2014 (PMID: 24563245)" disabled>Thermotaxis Index</button>
+            <br>
+        </div>
+        <div class="controls_4">
+            <font size="3">Data Array 1:</font>
+            <INPUT TYPE='TEXT' NAME='t test' id="t_test_option1" size="35" placeholder="e.g 0.8,0.77,0.65,0.89"></INPUT>
+            <br>
+            <font size="3">Data Array 2:</font>
+            <INPUT TYPE='TEXT' NAME='t test' id="t_test_option2" size="35" placeholder="e.g 0.22,0.35,0.44,0.16"></INPUT>
+            <br>
+            <font size="3">Type of Data:</font>
+            <select id='degF' data-step="30" data-intro="Enter '1' for paired data; '2' for two-sample equal variance; '3' for two-sample unequal variance">
+                <option value="1" selected="selected">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+            <button onclick="t_test()" data-step="31" data-intro="Calculate t-test and P-values for chemotaxis data: enter control chemotaxis indices (CIs) in array 1 as csv, and experimental CIs in Array 2 as csv, and press button">Calculate significance</button>
+        </div>
+        <div class="step">
+            <br>
+            <button onclick="javascript:introJs().start()">USER GUIDE</button>
+        </div>
+        <script type="text/javascript" src="lib/intro.js"></script>
+        <div id="canvases" style="margin-top: 125px;">
+            <canvas id="myCanvas" class="canvas" data-step="32" data-intro="Visualize the loaded image here in the canvas"></canvas>
+        </div>
+    </div>
+</body>
+
+</html>
