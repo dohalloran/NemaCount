@@ -11,7 +11,7 @@ Damien O'Halloran, The George Washington University
   `cd NemaCount-master`  
   
 ## Getting Started  
-1. You must have [Google Chrome] (https://www.google.com/chrome/) or [Apple Safari] (http://www.apple.com/safari/)  browser   
+1. You must have [Google Chrome](https://www.google.com/chrome/) or [Apple Safari](http://www.apple.com/safari/)  browser   
 
 ## Usage 
 Run as follows:  
